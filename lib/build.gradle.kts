@@ -5,8 +5,8 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
 }
 
-group = "io.github.data"
-version = Version(name = "0.0.1")
+group = "io.github.railian.data"
+version = Version(name = "0.1.0")
 
 kotlin {
 
