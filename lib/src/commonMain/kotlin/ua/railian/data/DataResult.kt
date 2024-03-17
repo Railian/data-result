@@ -52,6 +52,19 @@ public sealed interface DataResult<out T, out E> {
             return runCatching(block)
                 .toDataResult(onFailure)
         }
+
+        /**
+         * Builds a new result [DataResult] by populating a [Factory] using the given [builder],
+         * catching any [Throwable] exception that was thrown from the [builder] function execution
+         * and encapsulating it as a failure with [onFailure] function.
+         */
+        public inline fun <R, F> buildCatching(
+            onFailure: (exception: Throwable) -> F,
+            builder: Factory.() -> DataResult<R, F>,
+        ): DataResult<R, F> {
+            return runCatching { builder() }
+                .getOrElse { failure(onFailure(it)) }
+        }
     }
 }
 
