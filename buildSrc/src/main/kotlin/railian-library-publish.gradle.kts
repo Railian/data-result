@@ -16,6 +16,7 @@ Properties().apply { load(project.rootProject.file("local.properties").reader())
 
 val javadocJar = tasks.register<Jar>("javadocJar") {
     archiveClassifier.set("javadoc")
+    dependsOn(tasks.named("dokkaHtml"))
 }
 
 publishing {

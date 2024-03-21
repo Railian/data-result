@@ -3,10 +3,11 @@ import ua.railian.gradle.Version
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.dokka)
 }
 
 group = "io.github.railian.data"
-version = Version(name = "0.1.1")
+version = Version(name = "0.1.9")
 
 kotlin {
 
