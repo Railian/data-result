@@ -1,12 +1,8 @@
-package ua.railian.data.result.flow.merge
+package ua.railian.data.result.merge
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import ua.railian.data.result.DataResult
-import ua.railian.data.result.merge.flatMerge
-import ua.railian.data.result.merge.flatMergeCatching
-import ua.railian.data.result.merge.merge
-import ua.railian.data.result.merge.mergeCatching
 
 //region flatMerge
 public inline fun <R, F, T1, T2, E> DataResult.Factory.flatMerge(

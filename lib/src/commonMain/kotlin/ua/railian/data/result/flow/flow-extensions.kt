@@ -206,7 +206,7 @@ public inline fun <R, F, T, E : F> Flow<DataResult<T, E>>.flatMapResultCatching(
 
 public inline fun <R, T : R, E> Flow<DataResult<T, E>>.recoverResult(
     crossinline transform: suspend (error: E) -> R,
-): Flow<DataResult.Success<R, Nothing>> = map { result ->
+): Flow<DataResult.Success<R, E>> = map { result ->
     result.recover { transform(it) }
 }
 
@@ -252,13 +252,13 @@ public inline fun <R, F, T, E> Flow<DataResult<T, E>>.transformResultCatching(
     )
 }
 
-public inline fun <T, E> Flow<DataResult<T, E>>.onSuccess(
+public inline fun <T, E> Flow<DataResult<T, E>>.onEachSuccess(
     crossinline action: suspend (value: T) -> Unit,
 ): Flow<DataResult<T, E>> = onEach { result ->
     result.onSuccess { action(it) }
 }
 
-public inline fun <T, E> Flow<DataResult<T, E>>.onFailure(
+public inline fun <T, E> Flow<DataResult<T, E>>.onEachFailure(
     crossinline action: suspend (error: E) -> Unit,
 ): Flow<DataResult<T, E>> = onEach { result ->
     result.onFailure { action(it) }

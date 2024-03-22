@@ -1,4 +1,4 @@
-package ua.railian.data.result.flow.merge
+package ua.railian.data.result.merge
 
 import kotlinx.coroutines.flow.Flow
 import ua.railian.data.result.DataResult

@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.railian.data"
-version = Version(name = "0.1.9")
+version = Version(name = "0.2.0")
 
 kotlin {
 

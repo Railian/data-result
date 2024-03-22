@@ -123,7 +123,7 @@ public inline fun <R, F, T : R> Result<T>.toDataResult(
 
 /**
  * Awaits for completion of this value without blocking the thread
- * and returns the resulting value encapsulated as success[isSuccess]
+ * and returns the resulting value encapsulated as [success][isSuccess]
  * or returns the result received with [handleException] function if it was failed.
  *
  * Note, that this function rethrows any [Throwable] exception thrown by [handleException] function.
@@ -311,8 +311,8 @@ public inline fun <R, F, T, E : F> DataResult<T, E>.flatMapCatching(
  */
 public inline fun <R, T : R, E> DataResult<T, E>.recover(
     transform: (error: E) -> R,
-): DataResult.Success<R, Nothing> = flatRecover { success(transform(it)) }
-        as DataResult.Success<R, Nothing>
+): DataResult.Success<R, E> = flatRecover { success(transform(it)) }
+        as DataResult.Success<R, E>
 
 /**
  * Returns the encapsulated result of the given [transform] function
