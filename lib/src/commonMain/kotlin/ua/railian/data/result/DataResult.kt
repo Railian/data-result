@@ -2,7 +2,6 @@
 
 package ua.railian.data.result
 
-import kotlinx.coroutines.Deferred
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -25,7 +24,7 @@ public sealed interface DataResult<out T, out E> {
 
     /**
      * Companion object for [DataResult] class that contains its factory functions
-     * [success], [failure] and [runCatching].
+     * [success], [failure] and [build].
      */
     public companion object Factory {
 
@@ -52,60 +51,12 @@ public sealed interface DataResult<out T, out E> {
         public fun <T, E> typedFailure(error: E): Failure<T, E> = Failure(error)
 
         /**
-         * Calls the specified function [block] and returns its encapsulated result
-         * if invocation was successful, catching any [Throwable] exception that was thrown
-         * from the [block] function execution and returning it as the result received
-         * with [handleException] function, but rethrows any [Throwable] exception
-         * thrown by [handleException] function.
+         * Builds a new [DataResult] by populating a [Factory] using the given [builder],
          */
-        public inline fun <R, F> runCatching(
-            handleException: Factory.(Throwable) -> DataResult<R, F>,
-            block: () -> R,
-        ): DataResult<R, F> {
-            return runCatching(block)
-                .toDataResult(handleException)
-        }
-
-        /**
-         * Calls the specified function [block] retrying [retryAttempts]
-         * if it throws any [Throwable] exception and returns its encapsulated result
-         * if invocation was successful, catching any [Throwable] exception that was thrown
-         * from the [block] function during last execution and returning it as the result
-         * received with [handleFinalException] function, but rethrows any [Throwable] exception
-         * thrown by [handleFinalException] function.
-         */
-        public fun <R, F> runCatching(
-            retryAttempts: Int,
-            handleFinalException: Factory.(Throwable) -> DataResult<R, F>,
-            block: (attempt: Int) -> R,
-        ): DataResult<R, F> {
-            return runCatching(retryAttempts, block)
-                .toDataResult(handleFinalException)
-        }
+        public inline fun <R, F> build(
+            builder: Factory.() -> DataResult<R, F>,
+        ): DataResult<R, F> = builder()
     }
-}
-
-/**
- * Builds a new [DataResult] by populating a [Factory] using the given [builder],
- */
-public inline fun <R, F> buildDataResult(
-    builder: DataResult.Factory.() -> DataResult<R, F>,
-): DataResult<R, F> {
-    return DataResult.builder()
-}
-
-/**
- * Builds a new [DataResult] by populating a [Factory] using the given [builder],
- * catching any [Throwable] exception that was thrown from the [builder] function execution
- * and returning it as the result received with [handleException] function,
- * but rethrows any [Throwable] exception thrown by [handleException] function.
- */
-public inline fun <R, F> buildDataResultCatching(
-    handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
-    builder: DataResult.Factory.() -> DataResult<R, F>,
-): DataResult<R, F> {
-    return runCatching { DataResult.builder() }
-        .getOrElse { DataResult.handleException(it) }
 }
 
 /**
@@ -116,21 +67,12 @@ public inline fun <R, F> buildDataResultCatching(
  */
 public inline fun <R, F, T : R> Result<T>.toDataResult(
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
-): DataResult<R, F> = fold(
-    onSuccess = { DataResult.success(it) },
-    onFailure = { DataResult.handleException(it) }
-)
-
-/**
- * Awaits for completion of this value without blocking the thread
- * and returns the resulting value encapsulated as [success][isSuccess]
- * or returns the result received with [handleException] function if it was failed.
- *
- * Note, that this function rethrows any [Throwable] exception thrown by [handleException] function.
- */
-public suspend fun <R, F, T : R> Deferred<T>.awaitAsDataResult(
-    handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
-): DataResult<R, F> = DataResult.runCatching(handleException) { await() }
+): DataResult<R, F> {
+    return fold(
+        onSuccess = { DataResult.success(it) },
+        onFailure = { DataResult.handleException(it) },
+    )
+}
 
 /**
  * Returns `true` if this instance represents a successful outcome.
@@ -227,29 +169,10 @@ public inline fun <R, T, E> DataResult<T, E>.fold(
  * or the original encapsulated error if it is [failure][isFailure].
  *
  * Note, that this function rethrows any [Throwable] exception thrown by [transform] function.
- *
- * See [mapCatching] for an alternative that encapsulates exceptions.
  */
 public inline fun <R, T, E> DataResult<T, E>.map(
     transform: (value: T) -> R,
 ): DataResult<R, E> = flatMap { success(transform(it)) }
-
-/**
- * Returns the encapsulated result of the given [transform] function
- * applied to the encapsulated value if this instance represents [success][isSuccess]
- * or the original encapsulated error if it is [failure][isFailure].
- *
- * This function catches any [Throwable] exception thrown by [transform] function
- * and returning it as the result received with [handleException] function,
- * but rethrows any [Throwable] exception thrown by [handleException] function.
- *
- * See [map] for an alternative that rethrows exceptions.
- */
-public inline fun <R, F, T, E : F> DataResult<T, E>.mapCatching(
-    handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
-    transform: (value: T) -> R,
-): DataResult<R, F> = flatMapCatching(handleException) { success(transform(it)) }
-
 
 /**
  * Returns the result of the given [transform] function
@@ -257,8 +180,6 @@ public inline fun <R, F, T, E : F> DataResult<T, E>.mapCatching(
  * or the original result if it is [failure][isFailure].
  *
  * Note, that this function rethrows any [Throwable] exception thrown by [transform] function.
- *
- * See [flatMapCatching] for an alternative that encapsulates exceptions.
  */
 public inline fun <R, F, T, E : F> DataResult<T, E>.flatMap(
     transform: DataResult.Factory.(value: T) -> DataResult<R, F>,
@@ -274,40 +195,11 @@ public inline fun <R, F, T, E : F> DataResult<T, E>.flatMap(
 }
 
 /**
- * Returns the result of the given [transform] function
- * applied to the encapsulated value if this instance represents [success][isSuccess]
- * or the original result if it is [failure][isFailure].
- *
- * This function catches any [Throwable] exception thrown by [transform] function
- * and returning it as the result received with [handleException] function,
- * but rethrows any [Throwable] exception thrown by [handleException] function.
- *
- * See [flatMap] for an alternative that rethrows exceptions.
- */
-public inline fun <R, F, T, E : F> DataResult<T, E>.flatMapCatching(
-    handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
-    transform: DataResult.Factory.(value: T) -> DataResult<R, F>,
-): DataResult<R, F> {
-    contract {
-        callsInPlace(handleException, InvocationKind.AT_MOST_ONCE)
-        callsInPlace(transform, InvocationKind.AT_MOST_ONCE)
-    }
-    @Suppress("UNCHECKED_CAST")
-    return when {
-        isFailure() -> this as DataResult<R, F>
-        else -> runCatching { DataResult.transform(value) }
-            .getOrElse { DataResult.handleException(it) }
-    }
-}
-
-/**
  * Returns the encapsulated result of the given [transform] function
  * applied to the encapsulated error if this instance represents [failure][isFailure]
  * or the original encapsulated value if it is [success][isSuccess].
  *
  * Note, that this function rethrows any [Throwable] exception thrown by [transform] function.
- *
- * See [recoverCatching] for an alternative that encapsulates exceptions.
  */
 public inline fun <R, T : R, E> DataResult<T, E>.recover(
     transform: (error: E) -> R,
@@ -315,29 +207,11 @@ public inline fun <R, T : R, E> DataResult<T, E>.recover(
         as DataResult.Success<R, E>
 
 /**
- * Returns the encapsulated result of the given [transform] function
- * applied to the encapsulated error if this instance represents [failure][isFailure]
- * or the original encapsulated value if it is [success][isSuccess].
- *
- * This function catches any [Throwable] exception thrown by [transform] function
- * and returning it as the result received with [handleException] function,
- * but rethrows any [Throwable] exception thrown by [handleException] function.
- *
- * See [recover] for an alternative that rethrows exceptions.
- */
-public inline fun <R, F, T : R, E> DataResult<T, E>.recoverCatching(
-    handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
-    transform: (error: E) -> R,
-): DataResult<R, F> = flatRecoverCatching(handleException) { success(transform(it)) }
-
-/**
  * Returns the result of the given [transform] function
  * applied to the encapsulated error if this instance represents [failure][isFailure]
  * or the original result if it is [success][isSuccess].
  *
  * Note, that this function rethrows any [Throwable] exception thrown by [transform] function.
- *
- * See [flatRecoverCatching] for an alternative that encapsulates exceptions.
  */
 public inline fun <R, F, T : R, E> DataResult<T, E>.flatRecover(
     transform: DataResult.Factory.(error: E) -> DataResult<R, F>,
@@ -353,38 +227,9 @@ public inline fun <R, F, T : R, E> DataResult<T, E>.flatRecover(
 }
 
 /**
- * Returns the result of the given [transform] function
- * applied to the encapsulated error if this instance represents [failure][isFailure]
- * or the original result if it is [success][isSuccess].
- *
- * This function catches any [Throwable] exception thrown by [transform] function
- * and returning it as the result received with [handleException] function,
- * but rethrows any [Throwable] exception thrown by [handleException] function.
- *
- * See [flatRecover] for an alternative that rethrows exceptions.
- */
-public inline fun <R, F, T : R, E> DataResult<T, E>.flatRecoverCatching(
-    handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
-    transform: DataResult.Factory.(error: E) -> DataResult<R, F>,
-): DataResult<R, F> {
-    contract {
-        callsInPlace(handleException, InvocationKind.AT_MOST_ONCE)
-        callsInPlace(transform, InvocationKind.AT_MOST_ONCE)
-    }
-    @Suppress("UNCHECKED_CAST")
-    return when {
-        isSuccess() -> this as DataResult<R, F>
-        else -> runCatching { DataResult.transform(error) }
-            .getOrElse { DataResult.handleException(it) }
-    }
-}
-
-/**
  * Returns the result of the given [transform] function applied to the original result.
  *
  * Note, that this function rethrows any [Throwable] exception thrown by [transform] function.
- *
- * See [transformCatching] for an alternative that encapsulates exceptions.
  */
 public inline fun <R, F, T, E> DataResult<T, E>.transform(
     transform: DataResult.Factory.(result: DataResult<T, E>) -> DataResult<R, F>,
@@ -393,27 +238,6 @@ public inline fun <R, F, T, E> DataResult<T, E>.transform(
         callsInPlace(transform, InvocationKind.EXACTLY_ONCE)
     }
     return DataResult.transform(this)
-}
-
-/**
- * Returns the result of the given [transform] function applied to the original result.
- *
- * This function catches any [Throwable] exception thrown by [transform] function
- * and returning it as the result received with [handleException] function,
- * but rethrows any [Throwable] exception thrown by [handleException] function.
- *
- * See [transform] for an alternative that rethrows exceptions.
- */
-public inline fun <R, F, T, E> DataResult<T, E>.transformCatching(
-    handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
-    transform: DataResult.Factory.(result: DataResult<T, E>) -> DataResult<R, F>,
-): DataResult<R, F> {
-    contract {
-        callsInPlace(handleException, InvocationKind.AT_MOST_ONCE)
-        callsInPlace(transform, InvocationKind.EXACTLY_ONCE)
-    }
-    return runCatching { DataResult.transform(this) }
-        .getOrElse { DataResult.handleException(it) }
 }
 
 /**
