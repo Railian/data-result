@@ -1,4 +1,5 @@
 # data-result
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.railian.data/data-result.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22io.github.railian.data%22%20AND%20a:%22data-result%22)
 
 ## Using in your projects
 ### Maven
