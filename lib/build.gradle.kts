@@ -95,6 +95,3 @@ signing {
 tasks.withType<AbstractPublishToMaven>().configureEach {
     dependsOn(tasks.withType<Sign>())
 }
-
-//
-//apply<RailianLibraryPublishPlugin>()
