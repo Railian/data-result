@@ -34,8 +34,11 @@ kotlin {
 
 private val githubRepositoryName = "data-result"
 
-Properties().apply { load(project.rootProject.file("local.properties").reader()) }
-    .onEach { project.ext[it.key.toString()] = it.value }
+val localProperties = project.rootProject.file("local.properties")
+if (localProperties.exists()) {
+    Properties().apply { load(localProperties.reader()) }
+        .onEach { project.ext[it.key.toString()] = it.value }
+}
 
 val javadocJar = tasks.register<Jar>("javadocJar") {
     archiveClassifier.set("javadoc")
