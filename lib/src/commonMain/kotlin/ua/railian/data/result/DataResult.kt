@@ -53,6 +53,7 @@ public sealed interface DataResult<out T, out E> {
         /**
          * Builds a new [DataResult] by populating a [Factory] using the given [builder],
          */
+        @Suppress("UNUSED_EXPRESSION")
         public inline fun <R, F> build(
             builder: Factory.() -> DataResult<R, F>,
         ): DataResult<R, F> = builder()
