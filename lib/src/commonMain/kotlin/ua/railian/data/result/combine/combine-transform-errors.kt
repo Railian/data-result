@@ -1,4 +1,4 @@
-package ua.railian.data.result.merge
+package ua.railian.data.result.combine
 
 import ua.railian.data.result.DataResult
 import ua.railian.data.result.errors
@@ -7,8 +7,8 @@ import ua.railian.data.result.filterIsSuccess
 import ua.railian.data.result.isFailure
 import ua.railian.data.result.values
 
-//region flatMerge
-public inline fun <R, F, T1, T2, E> DataResult.Factory.flatMerge(
+//region flatCombine
+public inline fun <R, F, T1, T2, E> DataResult.Factory.flatCombine(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     transformErrors: DataResult.Factory.(List<E>) -> DataResult<R, F>,
@@ -21,7 +21,7 @@ public inline fun <R, F, T1, T2, E> DataResult.Factory.flatMerge(
     return transformValues(result1.value, result2.value)
 }
 
-public inline fun <R, F, T1, T2, T3, E> DataResult.Factory.flatMerge(
+public inline fun <R, F, T1, T2, T3, E> DataResult.Factory.flatCombine(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
@@ -35,7 +35,7 @@ public inline fun <R, F, T1, T2, T3, E> DataResult.Factory.flatMerge(
     return transformValues(result1.value, result2.value, result3.value)
 }
 
-public inline fun <R, F, T1, T2, T3, T4, E> DataResult.Factory.flatMerge(
+public inline fun <R, F, T1, T2, T3, T4, E> DataResult.Factory.flatCombine(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
@@ -57,7 +57,7 @@ public inline fun <R, F, T1, T2, T3, T4, E> DataResult.Factory.flatMerge(
     )
 }
 
-public inline fun <R, F, T1, T2, T3, T4, T5, E> DataResult.Factory.flatMerge(
+public inline fun <R, F, T1, T2, T3, T4, T5, E> DataResult.Factory.flatCombine(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
@@ -80,7 +80,7 @@ public inline fun <R, F, T1, T2, T3, T4, T5, E> DataResult.Factory.flatMerge(
     )
 }
 
-public inline fun <R, F, T1, T2, T3, T4, T5, T6, E> DataResult.Factory.flatMerge(
+public inline fun <R, F, T1, T2, T3, T4, T5, T6, E> DataResult.Factory.flatCombine(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
@@ -104,7 +104,7 @@ public inline fun <R, F, T1, T2, T3, T4, T5, T6, E> DataResult.Factory.flatMerge
     )
 }
 
-public inline fun <R, F, T, E> DataResult.Factory.flatMerge(
+public inline fun <R, F, T, E> DataResult.Factory.flatCombine(
     results: Iterable<DataResult<T, E>>,
     transformErrors: DataResult.Factory.(List<E>) -> DataResult<R, F>,
     transformValues: DataResult.Factory.(List<T>) -> DataResult<R, F>,
@@ -117,49 +117,49 @@ public inline fun <R, F, T, E> DataResult.Factory.flatMerge(
     return transformValues(values)
 }
 
-public inline fun <R, F, T, E> DataResult.Factory.flatMerge(
+public inline fun <R, F, T, E> DataResult.Factory.flatCombine(
     vararg results: DataResult<T, E>,
     transformErrors: DataResult.Factory.(List<E>) -> DataResult<R, F>,
     transformValues: DataResult.Factory.(List<T>) -> DataResult<R, F>,
 ): DataResult<R, F> {
-    return flatMerge(
+    return flatCombine(
         results = results.toList(),
         transformErrors = transformErrors,
         transformValues = transformValues,
     )
 }
 
-public inline fun <R, F, T, E> Iterable<DataResult<T, E>>.flatMergeAll(
+public inline fun <R, F, T, E> Iterable<DataResult<T, E>>.flatCombineAll(
     transformErrors: DataResult.Factory.(List<E>) -> DataResult<R, F>,
     transformValues: DataResult.Factory.(List<T>) -> DataResult<R, F>,
 ): DataResult<R, F> {
-    return DataResult.flatMerge(
-        results = this@flatMergeAll,
+    return DataResult.flatCombine(
+        results = this@flatCombineAll,
         transformErrors = transformErrors,
         transformValues = transformValues,
     )
 }
 
-public inline fun <R, F, T, E> Array<DataResult<T, E>>.flatMergeAll(
+public inline fun <R, F, T, E> Array<DataResult<T, E>>.flatCombineAll(
     transformErrors: DataResult.Factory.(List<E>) -> DataResult<R, F>,
     transformValues: DataResult.Factory.(List<T>) -> DataResult<R, F>,
 ): DataResult<R, F> {
-    return DataResult.flatMerge(
-        results = this@flatMergeAll,
+    return DataResult.flatCombine(
+        results = this@flatCombineAll,
         transformErrors = transformErrors,
         transformValues = transformValues,
     )
 }
 //endregion
 
-//region merge
-public inline fun <R, F, T1, T2, E> DataResult.Factory.merge(
+//region combine
+public inline fun <R, F, T1, T2, E> DataResult.Factory.combine(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     transformErrors: (List<E>) -> F,
     transformValues: (T1, T2) -> R,
 ): DataResult<R, F> {
-    return flatMerge(
+    return flatCombine(
         result1 = result1,
         result2 = result2,
         transformErrors = { failure(transformErrors(it)) },
@@ -169,14 +169,14 @@ public inline fun <R, F, T1, T2, E> DataResult.Factory.merge(
     )
 }
 
-public inline fun <R, F, T1, T2, T3, E> DataResult.Factory.merge(
+public inline fun <R, F, T1, T2, T3, E> DataResult.Factory.combine(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
     transformErrors: (List<E>) -> F,
     transformValues: (T1, T2, T3) -> R,
 ): DataResult<R, F> {
-    return flatMerge(
+    return flatCombine(
         result1 = result1,
         result2 = result2,
         result3 = result3,
@@ -187,7 +187,7 @@ public inline fun <R, F, T1, T2, T3, E> DataResult.Factory.merge(
     )
 }
 
-public inline fun <R, F, T1, T2, T3, T4, E> DataResult.Factory.merge(
+public inline fun <R, F, T1, T2, T3, T4, E> DataResult.Factory.combine(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
@@ -195,7 +195,7 @@ public inline fun <R, F, T1, T2, T3, T4, E> DataResult.Factory.merge(
     transformErrors: (List<E>) -> F,
     transformValues: (T1, T2, T3, T4) -> R,
 ): DataResult<R, F> {
-    return flatMerge(
+    return flatCombine(
         result1 = result1,
         result2 = result2,
         result3 = result3,
@@ -207,7 +207,7 @@ public inline fun <R, F, T1, T2, T3, T4, E> DataResult.Factory.merge(
     )
 }
 
-public inline fun <R, F, T1, T2, T3, T4, T5, E> DataResult.Factory.merge(
+public inline fun <R, F, T1, T2, T3, T4, T5, E> DataResult.Factory.combine(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
@@ -216,7 +216,7 @@ public inline fun <R, F, T1, T2, T3, T4, T5, E> DataResult.Factory.merge(
     transformErrors: (List<E>) -> F,
     transformValues: (T1, T2, T3, T4, T5) -> R,
 ): DataResult<R, F> {
-    return flatMerge(
+    return flatCombine(
         result1 = result1,
         result2 = result2,
         result3 = result3,
@@ -229,7 +229,7 @@ public inline fun <R, F, T1, T2, T3, T4, T5, E> DataResult.Factory.merge(
     )
 }
 
-public inline fun <R, F, T1, T2, T3, T4, T5, T6, E> DataResult.Factory.merge(
+public inline fun <R, F, T1, T2, T3, T4, T5, T6, E> DataResult.Factory.combine(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
@@ -239,7 +239,7 @@ public inline fun <R, F, T1, T2, T3, T4, T5, T6, E> DataResult.Factory.merge(
     transformErrors: (List<E>) -> F,
     transformValues: (T1, T2, T3, T4, T5, T6) -> R,
 ): DataResult<R, F> {
-    return flatMerge(
+    return flatCombine(
         result1 = result1,
         result2 = result2,
         result3 = result3,
@@ -253,47 +253,47 @@ public inline fun <R, F, T1, T2, T3, T4, T5, T6, E> DataResult.Factory.merge(
     )
 }
 
-public inline fun <R, F, T, E> DataResult.Factory.merge(
+public inline fun <R, F, T, E> DataResult.Factory.combine(
     results: Iterable<DataResult<T, E>>,
     transformErrors: (List<E>) -> F,
     transformValues: (List<T>) -> R,
 ): DataResult<R, F> {
-    return flatMerge(
+    return flatCombine(
         results = results,
         transformErrors = { failure(transformErrors(it)) },
         transformValues = { success(transformValues(it)) },
     )
 }
 
-public inline fun <R, F, T, E> DataResult.Factory.merge(
+public inline fun <R, F, T, E> DataResult.Factory.combine(
     vararg results: DataResult<T, E>,
     transformErrors: (List<E>) -> F,
     transformValues: (List<T>) -> R,
 ): DataResult<R, F> {
-    return flatMerge(
+    return flatCombine(
         results = results,
         transformErrors = { failure(transformErrors(it)) },
         transformValues = { success(transformValues(it)) },
     )
 }
 
-public inline fun <R, F, T, E> Iterable<DataResult<T, E>>.mergeAll(
+public inline fun <R, F, T, E> Iterable<DataResult<T, E>>.combineAll(
     transformErrors: (List<E>) -> F,
     transformValues: (List<T>) -> R,
 ): DataResult<R, F> {
-    return DataResult.flatMerge(
-        results = this@mergeAll,
+    return DataResult.flatCombine(
+        results = this@combineAll,
         transformErrors = { failure(transformErrors(it)) },
         transformValues = { success(transformValues(it)) },
     )
 }
 
-public inline fun <R, F, T, E> Array<DataResult<T, E>>.mergeAll(
+public inline fun <R, F, T, E> Array<DataResult<T, E>>.combineAll(
     transformErrors: (List<E>) -> F,
     transformValues: (List<T>) -> R,
 ): DataResult<R, F> {
-    return DataResult.flatMerge(
-        results = this@mergeAll,
+    return DataResult.flatCombine(
+        results = this@combineAll,
         transformErrors = { failure(transformErrors(it)) },
         transformValues = { success(transformValues(it)) },
     )

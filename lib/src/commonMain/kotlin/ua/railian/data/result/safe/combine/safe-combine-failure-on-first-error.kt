@@ -1,15 +1,15 @@
-package ua.railian.data.result.safe.merge
+package ua.railian.data.result.safe.combine
 
 import ua.railian.data.result.DataResult
 
-//region flatMergeCatching
-public inline fun <R, F, T1, T2, E : F> DataResult.Factory.flatMergeCatching(
+//region flatCombineCatching
+public inline fun <R, F, T1, T2, E : F> DataResult.Factory.flatCombineCatching(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: DataResult.Factory.(T1, T2) -> DataResult<R, F>,
 ): DataResult<R, F> {
-    return flatMergeCatching(
+    return flatCombineCatching(
         result1 = result1,
         result2 = result2,
         handleException = handleException,
@@ -18,14 +18,14 @@ public inline fun <R, F, T1, T2, E : F> DataResult.Factory.flatMergeCatching(
     )
 }
 
-public inline fun <R, F, T1, T2, T3, E : F> DataResult.Factory.flatMergeCatching(
+public inline fun <R, F, T1, T2, T3, E : F> DataResult.Factory.flatCombineCatching(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: DataResult.Factory.(T1, T2, T3) -> DataResult<R, F>,
 ): DataResult<R, F> {
-    return flatMergeCatching(
+    return flatCombineCatching(
         result1 = result1,
         result2 = result2,
         result3 = result3,
@@ -35,7 +35,7 @@ public inline fun <R, F, T1, T2, T3, E : F> DataResult.Factory.flatMergeCatching
     )
 }
 
-public inline fun <R, F, T1, T2, T3, T4, E : F> DataResult.Factory.flatMergeCatching(
+public inline fun <R, F, T1, T2, T3, T4, E : F> DataResult.Factory.flatCombineCatching(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
@@ -43,7 +43,7 @@ public inline fun <R, F, T1, T2, T3, T4, E : F> DataResult.Factory.flatMergeCatc
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: DataResult.Factory.(T1, T2, T3, T4) -> DataResult<R, F>,
 ): DataResult<R, F> {
-    return flatMergeCatching(
+    return flatCombineCatching(
         result1 = result1,
         result2 = result2,
         result3 = result3,
@@ -54,7 +54,7 @@ public inline fun <R, F, T1, T2, T3, T4, E : F> DataResult.Factory.flatMergeCatc
     )
 }
 
-public inline fun <R, F, T1, T2, T3, T4, T5, E : F> DataResult.Factory.flatMergeCatching(
+public inline fun <R, F, T1, T2, T3, T4, T5, E : F> DataResult.Factory.flatCombineCatching(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
@@ -63,7 +63,7 @@ public inline fun <R, F, T1, T2, T3, T4, T5, E : F> DataResult.Factory.flatMerge
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: DataResult.Factory.(T1, T2, T3, T4, T5) -> DataResult<R, F>,
 ): DataResult<R, F> {
-    return flatMergeCatching(
+    return flatCombineCatching(
         result1 = result1,
         result2 = result2,
         result3 = result3,
@@ -75,7 +75,7 @@ public inline fun <R, F, T1, T2, T3, T4, T5, E : F> DataResult.Factory.flatMerge
     )
 }
 
-public inline fun <R, F, T1, T2, T3, T4, T5, T6, E : F> DataResult.Factory.flatMergeCatching(
+public inline fun <R, F, T1, T2, T3, T4, T5, T6, E : F> DataResult.Factory.flatCombineCatching(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
@@ -85,7 +85,7 @@ public inline fun <R, F, T1, T2, T3, T4, T5, T6, E : F> DataResult.Factory.flatM
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: DataResult.Factory.(T1, T2, T3, T4, T5, T6) -> DataResult<R, F>,
 ): DataResult<R, F> {
-    return flatMergeCatching(
+    return flatCombineCatching(
         result1 = result1,
         result2 = result2,
         result3 = result3,
@@ -98,12 +98,12 @@ public inline fun <R, F, T1, T2, T3, T4, T5, T6, E : F> DataResult.Factory.flatM
     )
 }
 
-public inline fun <R, F, T, E : F> DataResult.Factory.flatMergeCatching(
+public inline fun <R, F, T, E : F> DataResult.Factory.flatCombineCatching(
     results: Iterable<DataResult<T, E>>,
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: DataResult.Factory.(List<T>) -> DataResult<R, F>,
 ): DataResult<R, F> {
-    return flatMergeCatching(
+    return flatCombineCatching(
         results = results,
         handleException = handleException,
         transformErrors = { failure(it.first()) },
@@ -111,12 +111,12 @@ public inline fun <R, F, T, E : F> DataResult.Factory.flatMergeCatching(
     )
 }
 
-public inline fun <R, F, T, E : F> DataResult.Factory.flatMergeCatching(
+public inline fun <R, F, T, E : F> DataResult.Factory.flatCombineCatching(
     vararg results: DataResult<T, E>,
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: DataResult.Factory.(List<T>) -> DataResult<R, F>,
 ): DataResult<R, F> {
-    return flatMergeCatching(
+    return flatCombineCatching(
         results = results,
         handleException = handleException,
         transformErrors = { failure(it.first()) },
@@ -124,11 +124,11 @@ public inline fun <R, F, T, E : F> DataResult.Factory.flatMergeCatching(
     )
 }
 
-public inline fun <R, F, T, E : F> Iterable<DataResult<T, E>>.flatMergeAllCatching(
+public inline fun <R, F, T, E : F> Iterable<DataResult<T, E>>.flatCombineAllCatching(
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: DataResult.Factory.(List<T>) -> DataResult<R, F>,
 ): DataResult<R, F> {
-    return DataResult.flatMergeCatching(
+    return DataResult.flatCombineCatching(
         results = this,
         handleException = handleException,
         transformErrors = { failure(it.first()) },
@@ -136,11 +136,11 @@ public inline fun <R, F, T, E : F> Iterable<DataResult<T, E>>.flatMergeAllCatchi
     )
 }
 
-public inline fun <R, F, T, E : F> Array<DataResult<T, E>>.flatMergeAllCatching(
+public inline fun <R, F, T, E : F> Array<DataResult<T, E>>.flatCombineAllCatching(
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: DataResult.Factory.(List<T>) -> DataResult<R, F>,
 ): DataResult<R, F> {
-    return DataResult.flatMergeCatching(
+    return DataResult.flatCombineCatching(
         results = this,
         handleException = handleException,
         transformErrors = { failure(it.first()) },
@@ -150,14 +150,14 @@ public inline fun <R, F, T, E : F> Array<DataResult<T, E>>.flatMergeAllCatching(
 //endregion
 
 
-//region mergeCatching
-public inline fun <R, F, T1, T2, E : F> DataResult.Factory.mergeCatching(
+//region combineCatching
+public inline fun <R, F, T1, T2, E : F> DataResult.Factory.combineCatching(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: (T1, T2) -> R,
 ): DataResult<R, F> {
-    return mergeCatching(
+    return combineCatching(
         result1 = result1,
         result2 = result2,
         handleException = handleException,
@@ -166,14 +166,14 @@ public inline fun <R, F, T1, T2, E : F> DataResult.Factory.mergeCatching(
     )
 }
 
-public inline fun <R, F, T1, T2, T3, E : F> DataResult.Factory.mergeCatching(
+public inline fun <R, F, T1, T2, T3, E : F> DataResult.Factory.combineCatching(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: (T1, T2, T3) -> R,
 ): DataResult<R, F> {
-    return mergeCatching(
+    return combineCatching(
         result1 = result1,
         result2 = result2,
         result3 = result3,
@@ -183,7 +183,7 @@ public inline fun <R, F, T1, T2, T3, E : F> DataResult.Factory.mergeCatching(
     )
 }
 
-public inline fun <R, F, T1, T2, T3, T4, E : F> DataResult.Factory.mergeCatching(
+public inline fun <R, F, T1, T2, T3, T4, E : F> DataResult.Factory.combineCatching(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
@@ -191,7 +191,7 @@ public inline fun <R, F, T1, T2, T3, T4, E : F> DataResult.Factory.mergeCatching
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: (T1, T2, T3, T4) -> R,
 ): DataResult<R, F> {
-    return mergeCatching(
+    return combineCatching(
         result1 = result1,
         result2 = result2,
         result3 = result3,
@@ -202,7 +202,7 @@ public inline fun <R, F, T1, T2, T3, T4, E : F> DataResult.Factory.mergeCatching
     )
 }
 
-public inline fun <R, F, T1, T2, T3, T4, T5, E : F> DataResult.Factory.mergeCatching(
+public inline fun <R, F, T1, T2, T3, T4, T5, E : F> DataResult.Factory.combineCatching(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
@@ -211,7 +211,7 @@ public inline fun <R, F, T1, T2, T3, T4, T5, E : F> DataResult.Factory.mergeCatc
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: (T1, T2, T3, T4, T5) -> R,
 ): DataResult<R, F> {
-    return mergeCatching(
+    return combineCatching(
         result1 = result1,
         result2 = result2,
         result3 = result3,
@@ -223,7 +223,7 @@ public inline fun <R, F, T1, T2, T3, T4, T5, E : F> DataResult.Factory.mergeCatc
     )
 }
 
-public inline fun <R, F, T1, T2, T3, T4, T5, T6, E : F> DataResult.Factory.mergeCatching(
+public inline fun <R, F, T1, T2, T3, T4, T5, T6, E : F> DataResult.Factory.combineCatching(
     result1: DataResult<T1, E>,
     result2: DataResult<T2, E>,
     result3: DataResult<T3, E>,
@@ -233,7 +233,7 @@ public inline fun <R, F, T1, T2, T3, T4, T5, T6, E : F> DataResult.Factory.merge
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: (T1, T2, T3, T4, T5, T6) -> R,
 ): DataResult<R, F> {
-    return mergeCatching(
+    return combineCatching(
         result1 = result1,
         result2 = result2,
         result3 = result3,
@@ -246,12 +246,12 @@ public inline fun <R, F, T1, T2, T3, T4, T5, T6, E : F> DataResult.Factory.merge
     )
 }
 
-public inline fun <R, F, T, E : F> DataResult.Factory.mergeCatching(
+public inline fun <R, F, T, E : F> DataResult.Factory.combineCatching(
     results: Iterable<DataResult<T, E>>,
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: (List<T>) -> R,
 ): DataResult<R, F> {
-    return DataResult.mergeCatching(
+    return DataResult.combineCatching(
         results = results,
         handleException = handleException,
         transformErrors = List<E>::first,
@@ -259,12 +259,12 @@ public inline fun <R, F, T, E : F> DataResult.Factory.mergeCatching(
     )
 }
 
-public inline fun <R, F, T, E : F> DataResult.Factory.mergeCatching(
+public inline fun <R, F, T, E : F> DataResult.Factory.combineCatching(
     vararg results: DataResult<T, E>,
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: (List<T>) -> R,
 ): DataResult<R, F> {
-    return mergeCatching(
+    return combineCatching(
         results = results,
         handleException = handleException,
         transformErrors = List<E>::first,
@@ -272,11 +272,11 @@ public inline fun <R, F, T, E : F> DataResult.Factory.mergeCatching(
     )
 }
 
-public inline fun <R, F, T, E : F> Iterable<DataResult<T, E>>.mergeAllCatching(
+public inline fun <R, F, T, E : F> Iterable<DataResult<T, E>>.combineAllCatching(
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: (List<T>) -> R,
 ): DataResult<R, F> {
-    return DataResult.mergeCatching(
+    return DataResult.combineCatching(
         results = this,
         handleException = handleException,
         transformErrors = List<E>::first,
@@ -284,11 +284,11 @@ public inline fun <R, F, T, E : F> Iterable<DataResult<T, E>>.mergeAllCatching(
     )
 }
 
-public inline fun <R, F, T, E : F> Array<DataResult<T, E>>.mergeAllCatching(
+public inline fun <R, F, T, E : F> Array<DataResult<T, E>>.combineAllCatching(
     handleException: DataResult.Factory.(Throwable) -> DataResult<R, F>,
     transformValues: (List<T>) -> R,
 ): DataResult<R, F> {
-    return DataResult.mergeCatching(
+    return DataResult.combineCatching(
         results = this,
         handleException = handleException,
         transformErrors = List<E>::first,
