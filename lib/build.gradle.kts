@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "io.github.railian.data"
-version = Version(name = "0.3.0-alpha04", isSnapshot = true)
+version = Version(name = "0.2.4", isSnapshot = false)
 
 kotlin {
 
@@ -106,7 +106,9 @@ publishing {
             pom {
                 name.set("$groupId:$artifactId")
                 url.set("https://github.com/Railian/$githubRepositoryName")
-                description.set("Some coroutines extensions for easy codding")
+                description.set("DataResult is a discriminated union that encapsulates" +
+                        " a successful outcome with a value of type [T]" +
+                        " or a failure with an error of type [E].")
                 licenses {
                     license {
                         name.set("The Apache License, Version 2.0")
