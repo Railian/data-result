@@ -12,13 +12,11 @@ import kotlin.contracts.contract
  */
 public sealed interface DataResult<out T, out E> {
 
-    @JvmInline
-    public value class Success<out T, out E> internal constructor(
+    public data class Success<out T, out E> internal constructor(
         public val value: T,
     ) : DataResult<T, E>
 
-    @JvmInline
-    public value class Failure<out T, out E> internal constructor(
+    public data class Failure<out T, out E> internal constructor(
         public val error: E,
     ) : DataResult<T, E>
 
