@@ -10,15 +10,54 @@ plugins {
 }
 
 group = "io.github.railian.data"
-version = Version(name = "0.2.2")
+version = Version(name = "0.2.4", isSnapshot = false)
 
 kotlin {
 
-    jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
-        }
+    jvm() // JVM target
+
+    // JS targets
+    js(IR) {
+        browser() // web browsers
+        nodejs()  // Node.js
     }
+
+    wasmJs {
+        browser() // web browsers
+        nodejs() // Node.js
+    }
+
+    // iOS targets
+    iosArm64() // iOS ARM64
+    iosX64() // iOS x64
+    iosSimulatorArm64() // iOS simulator ARM64
+
+    // macOS targets
+    macosX64() // macOS x64
+    macosArm64() // macOS ARM64
+
+    // Linux target
+    linuxX64() // Linux x64
+
+    // Windows target
+    mingwX64() // Windows x64 (MinGW)
+
+    // WatchOS targets
+    watchosArm32() // WatchOS ARM32
+    watchosArm64() // WatchOS ARM64
+    watchosX64() // WatchOS x64
+    watchosSimulatorArm64() // WatchOS simulator ARM64
+
+    // tvOS targets
+    tvosArm64() // tvOS ARM64
+    tvosX64() // tvOS x64
+    tvosSimulatorArm64() // tvOS simulator ARM64
+
+    // Android targets
+    androidNativeArm32() // Android ARM32
+    androidNativeArm64() // Android ARM64
+    androidNativeX86() // Android x86
+    androidNativeX64() // Android x64
 
     sourceSets {
         commonMain.dependencies {
@@ -62,12 +101,14 @@ publishing {
 
     publications {
         withType<MavenPublication> {
-            artifact(javadocJar)
-            artifactId = githubRepositoryName
+            artifactId = githubRepositoryName + artifactId.removePrefix("lib")
+
             pom {
                 name.set("$groupId:$artifactId")
                 url.set("https://github.com/Railian/$githubRepositoryName")
-                description.set("Some coroutines extensions for easy codding")
+                description.set("DataResult is a discriminated union that encapsulates" +
+                        " a successful outcome with a value of type [T]" +
+                        " or a failure with an error of type [E].")
                 licenses {
                     license {
                         name.set("The Apache License, Version 2.0")
