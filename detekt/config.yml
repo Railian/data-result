@@ -1,0 +1,26 @@
+
+comments:
+  UndocumentedPublicClass:
+    active: false
+  UndocumentedPublicFunction:
+    active: false
+  UndocumentedPublicProperty:
+    active: false
+
+complexity:
+  ComplexCondition:
+    active: false
+  LongParameterList:
+    active: false
+  MethodOverloading:
+    active: false
+  TooManyFunctions:
+    active: false
+
+style:
+  ExpressionBodySyntax:
+    active: false
+  RedundantVisibilityModifierRule:
+    active: false
+  UseIfInsteadOfWhen:
+    active: false

@@ -1,12 +1,14 @@
 [versions]
 kotlin = "2.0.0"
-kotlin-dokka = "1.9.20"
 kotlinx-coroutines = "1.8.1"
+detekt = "1.23.6"
+dokka = "1.9.20"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 
 [plugins]
-kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin-dokka" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform" }
+detekt = { id = "io.gitlab.arturbosch.detekt" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
